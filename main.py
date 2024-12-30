@@ -1,39 +1,3 @@
-The algorithm is far from perfect, and currently it manages to explore the space for up to S=121,104, while the greedy approach would net a result of 2,401. I've started my application two days ago, and this is what I wrote during two days, hopefully if I had more time I could have finished the task fully.
-In case it's easier for someone, 
-
-SOLUTION:
-Variables: A (the x-coordinate size), B (the y-coordinate size), an initial position (x_0, y_0) and position of the apple (x_a, y_a)
-The game is played on a torus
-Constraints: A,B>=1, AB<1000000, moves <= 35AB
-We're minimizing the number of moves sent to the engine, not the steps in the algorithm.
-
-I define origin of the coordinate system as the starting position (which doesn't sacrifice specificity on a torus) so that the starting position is (1,1), i.e. x_t=x-x_0 where x is the current x coordinate, and x_t is the translated x coordinate, same with the y dimension. The coordinates in the game engine form a system of modular arithmetic, such that x=x%A and y=y%B, but I will use coordinates that don't follow this rule. Instead, I will be viewing the torus as an infinite tiling of rectangles, where visiting a space in one rectangle marks this space visited in all rectangles. From now on, unless stated otherwise, I am using this system.
-
-The only feedback we are getting is the fact that after X moves, if the game hasn't ended we know that X <= 35AB, which as the only piece of information is worth paying attention to.
-
-There are two cases which aren't explicitly contradicted: one is that the Snake game is like the popular one where the snake moves on its own every tick and the input changes direction, but this has a trivial solution, e.g. hitting left at first, waiting for a million ticks, clicking down, then immediately left, and repeating this procedure until victory.
-It's obvious from contextual cues that this is not the one I'm supposed to solve, and I need to manually move the snake each time like a game piece on a board.
-
-As every command moves the snake to another space within identical distance, every command is a new visited coordinate, and thus any procedure which doesn't revisit the same space twice is equivalent, as are any procedures which at every point in time have revisited previous spaces n amount of times. For known A and B, an example would be a procedure which first explores the space 1x1, then explores the edge of the space to expand the region to 2x2, and so on, until it reaches min(A,B) x min(A,B), and then explores the remaining rectangle recursively just like it explored the first part - exploring squares until there is no more to explore. Because of the wraparound, we always have an empty field next to us after finishing the square, so we can guarantee no duplicates.
-
-As for every size S+1 the problem is a subset of the problem for size S, the best approach will be to at first assume S=1 and then progressively enlarge S, now exploring the search area not covered previously.
-
-For every size of the field, we need to explore all the possible values of A and B. E.g. for a field of the size 100, we need to explore the possibilities 10x10, 1x100, 100x1 and everything in between, i.e. all the values of A and B such that A,B<=100 and AB<=100. Those rectangles will obviously be constrained by a hyperbola - for a size S, the hyperbola will be y(x)=S/x. 
-For the worst-case size, i.e. 1000000, the absolute maximum size of search will be the integral from 1/1000000 to 1000000 of the function y(x)=1000000/x, which when integrated numerically with step of 1 works out to 13970034, or around 14S. This means that assuming the worst-case scenario where we backtrack every pixel, it would be 26S, so this suggests it likely is possible to explore the area with backtracking (and therefore certainty of our position) while meeting the <=35S constraint, especially when you consider that while to draw a 10x10 square you need 100 steps, to backtrack you need only 20, so this is still a worst case scenario that applies only to 1xB and Ax1 rectangles, and the true upper bound is somewhere between 2x14S and S+2sqrt(S).
-
-Because we view the torus as a tiling, the task boils down to "drawing" a space constrained hyperbola with the visited squares, and then expanding the hyperbola progressively. I will choose steps where every step the central square will grow by 1 (e.g. from 100x100 to 101x101), so S will grow a quadratic rate. Depending on the margins we achieve, this could theoretically pose a problem where we don't explore the intermediate values fast enough, so if testing does show that problem, it will need to be solved.
-Because I do not expect to intentionally leave empty spaces surrounded by searched spaces, I will store the current state of the search-space via a dictionary (implemented as a hash table - for faster lookups) storing the heights of the area searched for each x coordinate. E.g. {1:3, 2:2, 3:1} means:
-[]
-[] []
-[] [] []
-This representation could be improved, e.g. by providing the description only up to the half-way point, but as my optimisations aren't symmetric, I will leave it as it is, as I don't judge it worth the effort for now.
-
-I've decided to write the code in Python, as Jupyter allows for rapid iteration, and I didn't need any real complex dependency structures or object-orientedness in this case.
-During the implementation, the problem presented itself that it's very impractical to expand the furthest reaches of the graph every time, so a greedy approach won't work. I implemented a solution that periodically expands the edges so I need to return less often.
-The algorithm uses the greedy approach until the next iteration would need to touch the first column of the graph - then, budget is allocated, and this iteration is used for expanding the furthest regions. I've been adjusting the parameters, and the current version of the algorithm has the main problem of estimating the number of steps those expansions will take. If I had more time, I would try developing a better heuristic for that, thinking about how one would actually calculate the upper bound rigorously for my algorithm, or simply just run the iteration "virtually", and if we go over budget, then try adjusting the parameters until it passes. However, I've ran out of time, so this is as far as I got.
-
-
-ALGORITHM (to work with the game engine, just add the sendSignal to the sendSignalInternal method):
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
