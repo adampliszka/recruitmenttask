@@ -23,10 +23,10 @@ For the simplicity, your program can call some pre-defined method (for example t
 
 Important notes and limitations of this task:
 
-    You can assume that S = A * B is always less than 1000000 (10^6)
-    Please note that you must never use more than 35 * S steps regardless of the field shape (please, make sure, your solution doesn't make too many unnecessary steps for the fields 1x1000000, 1000000x1, 1000x1000, etc.)
-    You don't receive any extra notifications from the gaming environment (you never know when you reach one of the borders)
-    You can never "hit" any border because once you reach a border and attempt to "cross" it, your snake would be teleported to the opposite border immediately (you are effectively playing a "Snake" game on a Torus).
-    A solution of this task that never makes more than 35 * S steps might be complex to come up with, so "partial" solutions will be also considered depending on how effective they are. Feel free and encouraged to implement some "baseline solution" that solves the problem somehow (maybe spending O(S^2) steps instead of O(S) or O(S*logS), for example), and then try to improve it as much as you can. Any interesting improvements will be considered (for example, if you can come up with a solution that uses O(S * sqrt(S)) steps or with some notable heuristic that doesn't change the complexity of your solution in terms of the steps used, but it significantly improves it for some specific classes of the screen shapes, or "in average")
+You can assume that S = A * B is always less than 1000000 (10^6)
+Please note that you must never use more than 35 * S steps regardless of the field shape (please, make sure, your solution doesn't make too many unnecessary steps for the fields 1x1000000, 1000000x1, 1000x1000, etc.)
+You don't receive any extra notifications from the gaming environment (you never know when you reach one of the borders)
+You can never "hit" any border because once you reach a border and attempt to "cross" it, your snake would be teleported to the opposite border immediately (you are effectively playing a "Snake" game on a Torus).
+A solution of this task that never makes more than 35 * S steps might be complex to come up with, so "partial" solutions will be also considered depending on how effective they are. Feel free and encouraged to implement some "baseline solution" that solves the problem somehow (maybe spending O(S^2) steps instead of O(S) or O(S*logS), for example), and then try to improve it as much as you can. Any interesting improvements will be considered (for example, if you can come up with a solution that uses O(S * sqrt(S)) steps or with some notable heuristic that doesn't change the complexity of your solution in terms of the steps used, but it significantly improves it for some specific classes of the screen shapes, or "in average")
     Please note, that if you invent some notable heuristic or some algorithm that improves the number of steps used significantly we would like to read some theoretical proof or just an explanation why it works well.
 
